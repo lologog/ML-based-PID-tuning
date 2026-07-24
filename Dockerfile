@@ -10,8 +10,12 @@ FROM python:3.14-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy main.py from the host into /app inside the image
+# Install pytest inside the image
+RUN pip install pytest
+
+# Copy project files into the image
 COPY main.py .
+COPY tests ./tests
 
 # Define the default command executed when the container starts
 # Equivalent to running: python main.py
