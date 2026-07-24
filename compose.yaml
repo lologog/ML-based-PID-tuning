@@ -1,0 +1,18 @@
+# Build all services defined in compose.yaml:
+# docker compose build
+
+# Run all services:
+# docker compose up
+
+# Stop and remove all services:
+# docker compose down
+
+# Define services used by the project
+services:
+
+  # Main Python application
+  app:
+
+    # Build the image using files from the current directory
+    build:
+      context: .
