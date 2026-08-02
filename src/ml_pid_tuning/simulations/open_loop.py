@@ -1,0 +1,27 @@
+from ml_pid_tuning.plants.first_order import FirstOrderPlant
+
+def run_simulation():
+    plant = FirstOrderPlant(gain=2.0, time_constant=5.0)
+
+    input_signal = 1.0
+    simulation_time = 20.0
+    dt = 0.1
+
+    current_time = 0.0
+    step_number = 0
+
+    print("Open-loop simulation of a first-order plant")
+    print()
+    print("Time [s]\tInput\tOutput")
+
+    while current_time <= simulation_time:
+        if step_number % 10 == 0:
+            print(f"{current_time:8.1f}\t{input_signal:5.2f}\t{plant.output:6.4f}")
+
+        plant.update(input_signal=input_signal, dt=dt)
+
+        current_time += dt
+        step_number += 1
+
+if __name__ == "__main__":
+    run_simulation()

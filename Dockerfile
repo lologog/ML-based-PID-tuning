@@ -14,8 +14,10 @@ WORKDIR /app
 RUN pip install pytest
 
 # Copy project files into the image
-COPY main.py .
+COPY src ./src
 COPY tests ./tests
+
+ENV PYTHONPATH=/app/src
 
 # Define the default command executed when the container starts
 # Equivalent to running: python main.py
