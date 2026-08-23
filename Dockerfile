@@ -21,4 +21,4 @@ ENV PYTHONPATH=/app/src
 
 # Define the default command executed when the container starts
 # Equivalent to running: python main.py
-CMD ["python", "main.py"]
+CMD ["python", "src/ml_pid_tuning/simulations/open_loop.py"]
