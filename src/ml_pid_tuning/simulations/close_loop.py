@@ -3,14 +3,7 @@ from ml_pid_tuning.controllers.pid import PIDController
 from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time
 import matplotlib.pyplot as plt
 
-def run_simulation():
-    plant = FirstOrderPlant(gain=2.0, time_constant=5.0)
-    pid = PIDController(kp=1.5, ti=4.0, td=0.5)
-
-    setpoint = 1.0
-    simulation_time = 20.0
-    dt = 0.1
-
+def run_simulation(plant, pid, setpoint=1.0, simulation_time=20.0, dt=0.1):
     current_time = 0.0
     step_number = 0
 
@@ -70,4 +63,7 @@ def run_simulation():
     plt.close()
 
 if __name__ == "__main__":
-    run_simulation()
+    plant = FirstOrderPlant(gain=2.0, time_constant=5.0)
+    pid = PIDController(kp=1.5, ti=4.0, td=0.5)
+
+    run_simulation(plant, pid)
