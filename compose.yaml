@@ -1,4 +1,4 @@
-# Build all services defined in compose.yaml:
+# Build all services:
 # docker compose build
 
 # Run all services:
@@ -7,15 +7,23 @@
 # Stop and remove all services:
 # docker compose down
 
-# Define services used by the project
 services:
 
-  # Main Python application
-  app:
-
-    # Build the image using files from the current directory
+  open_loop:
     build:
       context: .
 
     volumes:
       - ./plots:/app/plots
+
+    command: python src/ml_pid_tuning/simulations/open_loop.py
+
+
+  close_loop:
+    build:
+      context: .
+
+    volumes:
+      - ./plots:/app/plots
+
+    command: python src/ml_pid_tuning/simulations/close_loop.py
