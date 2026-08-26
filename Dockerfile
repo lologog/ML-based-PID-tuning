@@ -11,7 +11,7 @@ FROM python:3.14-slim
 WORKDIR /app
 
 # Install pytest inside the image
-RUN pip install pytest
+RUN pip install pytest matplotlib
 
 # Copy project files into the image
 COPY src ./src

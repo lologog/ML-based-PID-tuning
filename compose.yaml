@@ -16,3 +16,6 @@ services:
     # Build the image using files from the current directory
     build:
       context: .
+
+    volumes:
+      - ./plots:/app/plots
