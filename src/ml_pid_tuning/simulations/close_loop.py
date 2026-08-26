@@ -1,5 +1,6 @@
 from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.controllers.pid import PIDController
+from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time
 import matplotlib.pyplot as plt
 
 def run_simulation():
@@ -16,6 +17,7 @@ def run_simulation():
     time_values = []
     output_values = []
     setpoint_values = []
+    error_values = []
     control_signal_values = []
 
     print("Closed-loop simulation with PID controller")
@@ -30,6 +32,7 @@ def run_simulation():
         time_values.append(current_time)
         output_values.append(plant.output)
         setpoint_values.append(setpoint)
+        error_values.append(error)
         control_signal_values.append(control_signal)
 
         if step_number % 10 == 0:
@@ -39,6 +42,20 @@ def run_simulation():
 
         current_time += dt
         step_number += 1
+
+    iae = calculate_iae(time_values, error_values)
+    ise = calculate_ise(time_values, error_values)
+    itae = calculate_itae(time_values, error_values)
+    overshoot = calculate_overshoot(output_values, setpoint)
+    settling_time = calculate_settling_time(time_values, output_values, setpoint)
+
+    print()
+    print("Performance metrics")
+    print(f"IAE: {iae:.4f}")
+    print(f"ISE: {ise:.4f}")
+    print(f"ITAE: {itae:.4f}")
+    print(f"Overshoot: {overshoot:.2f}%")
+    print(f"Settling time: {settling_time}")
 
     plt.plot(time_values, output_values, label="Output")
     plt.plot(time_values, setpoint_values, label="Setpoint")
@@ -51,7 +68,6 @@ def run_simulation():
 
     plt.savefig("plots/closed_loop_response.png")
     plt.close()
-
 
 if __name__ == "__main__":
     run_simulation()
