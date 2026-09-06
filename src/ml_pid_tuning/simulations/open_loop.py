@@ -1,6 +1,7 @@
 from ml_pid_tuning.plants.proportional import ProportionalPlant
 from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.plants.second_order import SecondOrderPlant
+from ml_pid_tuning.plants.integrating import IntegratingPlant
 
 import matplotlib.pyplot as plt
 
@@ -41,5 +42,6 @@ if __name__ == "__main__":
     plant0 = ProportionalPlant(gain=2.0)
     plant1 = FirstOrderPlant(gain=2.0, time_constant=5.0)
     plant2 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
+    plant4 = IntegratingPlant(gain=2.0)
 
-    run_simulation(plant0)
+    run_simulation(plant4)
