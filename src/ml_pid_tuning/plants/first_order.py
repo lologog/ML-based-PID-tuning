@@ -5,6 +5,13 @@ class FirstOrderPlant:
         self.output = 0.0
 
     def update(self, input_signal, dt):
-        output_derivative = (self.gain * input_signal - self.output) / self.time_constant
-        self.output += output_derivative * dt
+        T = self.time_constant
+        Ts = dt
+        K = self.gain
+
+        a = T / (T + Ts)
+        b = (K * Ts) / (T + Ts)
+
+        self.output = a * self.output + b * input_signal
+
         return self.output
