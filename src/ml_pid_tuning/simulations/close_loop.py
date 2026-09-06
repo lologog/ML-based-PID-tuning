@@ -1,3 +1,4 @@
+from ml_pid_tuning.plants.proportional import ProportionalPlant
 from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.plants.second_order import SecondOrderPlant
 from ml_pid_tuning.controllers.pid import PIDController
@@ -64,8 +65,9 @@ def run_simulation(plant, pid, setpoint=1.0, simulation_time=60.0, dt=0.1):
     plt.close()
 
 if __name__ == "__main__":
+    plant0 = ProportionalPlant(gain=2.0)
     plant1 = FirstOrderPlant(gain=2.0, time_constant=5.0)
     plant2 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
     pid = PIDController(kp=1.5, ti=4.0, td=0.5)
 
-    run_simulation(plant2, pid)
+    run_simulation(plant0, pid)
