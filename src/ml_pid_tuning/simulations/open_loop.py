@@ -42,9 +42,9 @@ def run_simulation(plant, input_signal=1.0, simulation_time=60.0, dt=0.1):
     plt.close()
 
 if __name__ == "__main__":
-    plant0 = ProportionalPlant(gain=2.0)
-    plant1 = FirstOrderPlant(gain=2.0, time_constant=5.0)
-    plant2 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
+    plant1 = ProportionalPlant(gain=2.0)
+    plant2 = FirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant3 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant6 = DifferentiatingPlant(gain=2.0)
