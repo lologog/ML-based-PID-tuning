@@ -4,6 +4,7 @@ from ml_pid_tuning.plants.second_order import SecondOrderPlant
 from ml_pid_tuning.plants.integrating import IntegratingPlant
 from ml_pid_tuning.plants.integrating_first_order import IntegratingFirstOrderPlant
 from ml_pid_tuning.plants.differentiating import DifferentiatingPlant
+from ml_pid_tuning.plants.differentiating_first_order import DifferentiatingFirstOrderPlant
 from ml_pid_tuning.controllers.pid import PIDController
 from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time
 import matplotlib.pyplot as plt
@@ -74,6 +75,7 @@ if __name__ == "__main__":
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant6 = DifferentiatingPlant(gain=2.0)
+    plant7 = DifferentiatingFirstOrderPlant(gain=2.0, time_constant=5.0)
     pid = PIDController(kp=1.5, ti=4.0, td=0.5)
 
-    run_simulation(plant6, pid)
+    run_simulation(plant7, pid)
