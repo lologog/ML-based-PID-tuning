@@ -4,14 +4,19 @@ class SecondOrderPlant:
         self.time_constant_1 = time_constant_1
         self.time_constant_2 = time_constant_2
 
-        self.state_1 = 0.0
+        self.previous_output = 0.0
         self.output = 0.0
 
     def update(self, input_signal, dt):
-        state_1_derivative = (self.gain * input_signal - self.state_1) / self.time_constant_1
-        self.state_1 += state_1_derivative * dt
+        denominator = (self.time_constant_1 * self.time_constant_2) + (self.time_constant_1 + self.time_constant_2) * dt + dt ** 2
 
-        output_derivative = (self.state_1 - self.output) / self.time_constant_2
-        self.output += output_derivative * dt
+        a1 = (2 * self.time_constant_1 * self.time_constant_2 + (self.time_constant_1 + self.time_constant_2) *dt) / denominator
+        a2 = -(self.time_constant_1 * self.time_constant_2) / (denominator)
+        b = (self.gain * dt ** 2) / (denominator)
+
+        new_output = a1 * self.output + a2 * self.previous_output + b * input_signal
+
+        self.previous_output = self.output
+        self.output = new_output
 
         return self.output
