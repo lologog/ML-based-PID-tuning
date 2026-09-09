@@ -6,6 +6,7 @@ from ml_pid_tuning.plants.integrating_first_order import IntegratingFirstOrderPl
 from ml_pid_tuning.plants.differentiating import DifferentiatingPlant
 from ml_pid_tuning.plants.differentiating_first_order import DifferentiatingFirstOrderPlant
 from ml_pid_tuning.plants.oscillatory_second_order import OscillatorySecondOrderPlant
+from ml_pid_tuning.plants.transport_delay import TransportDelayPlant
 
 import matplotlib.pyplot as plt
 
@@ -51,5 +52,6 @@ if __name__ == "__main__":
     plant6 = DifferentiatingPlant(gain=2.0)
     plant7 = DifferentiatingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant8 = OscillatorySecondOrderPlant(gain=2.0, natural_frequency=0.5, damping_ratio=0.5)
+    plant9 = TransportDelayPlant(delay=5.0)
 
-    run_simulation(plant8)
+    run_simulation(plant9)
