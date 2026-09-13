@@ -1,7 +1,7 @@
 import pytest
 from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
 
-def test_initial_ouput():
+def test_initial_output():
     plant = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
     assert plant.output == 0.0
 
