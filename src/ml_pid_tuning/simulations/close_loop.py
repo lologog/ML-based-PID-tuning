@@ -90,6 +90,6 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = PIDController(kp=1.5, ti=4.0, td=0.5)
+    pid = PIDController(kp=1.5, ti=4.0, td=0.1)
 
     run_simulation(plant=plant2, controller=pid, setpoint=2.0, simulation_time=60.0, dt=0.1)
