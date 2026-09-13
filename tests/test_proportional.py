@@ -1,7 +1,7 @@
 import pytest
 from ml_pid_tuning.plants.proportional import ProportionalPlant
 
-def test_initial_input():
+def test_initial_output():
     plant = ProportionalPlant(gain=2.0)
     assert plant.output == 0.0
 
