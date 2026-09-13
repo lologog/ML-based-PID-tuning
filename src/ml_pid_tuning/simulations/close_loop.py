@@ -10,6 +10,8 @@ from ml_pid_tuning.plants.transport_delay import TransportDelayPlant
 from ml_pid_tuning.plants.first_order_transport_delay import FirstOrderTransportDelayPlant
 from ml_pid_tuning.plants.second_order_transport_delay import SecondOrderTransportDelayPlant
 from ml_pid_tuning.plants.unstable_first_order import UnstableFirstOrderPlant
+from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
+
 from ml_pid_tuning.controllers.pid import PIDController
 from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time
 import matplotlib.pyplot as plt
@@ -86,6 +88,8 @@ if __name__ == "__main__":
     plant10 = FirstOrderTransportDelayPlant(gain=2.0, time_constant=5.0, delay=2.0)
     plant11 = SecondOrderTransportDelayPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0, delay=2.0)
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
+
     pid = PIDController(kp=1.5, ti=4.0, td=0.5)
 
-    run_simulation(plant12, pid)
+    run_simulation(plant13, pid)
