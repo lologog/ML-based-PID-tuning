@@ -92,4 +92,4 @@ if __name__ == "__main__":
 
     pid = PIDController(kp=1.5, ti=4.0, td=0.5)
 
-    run_simulation(plant13, pid)
+    run_simulation(plant2, pid)
