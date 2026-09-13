@@ -37,8 +37,7 @@ def test_output_is_zero_during_delay():
 
     for _ in range(30):
         output = plant.update(input_signal=1.0, dt=0.1)
-
-    assert output == pytest.approx(0.0)
+        assert output == pytest.approx(0.0)
 
 def test_output_increases_after_delay():
     plant = FirstOrderTransportDelayPlant(gain=2.0, time_constant=5.0, delay=3.0)
