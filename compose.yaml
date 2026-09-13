@@ -9,6 +9,12 @@
 
 services:
 
+  tests:
+    build:
+      context: .
+
+    command: pytest -v
+
   open_loop:
     build:
       context: .
@@ -18,6 +24,9 @@ services:
 
     command: python src/ml_pid_tuning/simulations/open_loop.py
 
+    depends_on:
+      tests:
+        condition: service_completed_successfully
 
   close_loop:
     build:
@@ -28,8 +37,6 @@ services:
 
     command: python src/ml_pid_tuning/simulations/close_loop.py
 
-  tests:
-    build:
-      context: .
-
-    command: pytest -v
+    depends_on:
+      open_loop:
+        condition: service_completed_successfully
