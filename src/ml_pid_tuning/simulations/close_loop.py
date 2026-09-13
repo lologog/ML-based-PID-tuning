@@ -33,7 +33,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     while current_time <= simulation_time:
         error = setpoint - plant.output
 
-        control_signal = pid.update(error=error, dt=dt)
+        control_signal = controller.update(error=error, dt=dt)
 
         time_values.append(current_time)
         output_values.append(plant.output)
