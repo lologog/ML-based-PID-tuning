@@ -27,3 +27,9 @@ services:
       - ./plots:/app/plots
 
     command: python src/ml_pid_tuning/simulations/close_loop.py
+
+  tests:
+    build:
+      context: .
+
+    command: pytest -v
