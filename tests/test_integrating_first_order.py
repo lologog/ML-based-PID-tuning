@@ -1,0 +1,59 @@
+import pytest
+from ml_pid_tuning.plants.integrating_first_order import IntegratingFirstOrderPlant
+
+def test_initial_output():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    assert plant.output == 0.0
+
+def test_positive_input():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    output = plant.update(input_signal=1.0, dt=0.1)
+    assert output == pytest.approx(0.003921569)
+
+def test_zero_input():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    output = plant.update(input_signal=0.0, dt=0.1)
+    assert output == pytest.approx(0.0)
+
+def test_negative_input():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    output = plant.update(input_signal=-1.0, dt=0.1)
+    assert output == pytest.approx(-0.003921569)
+
+def test_output_keeps_increasing_for_constant_input():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+
+    for _ in range(100):
+        plant.update(input_signal=1.0, dt=0.1)
+
+    output_1 = plant.output
+
+    for _ in range(100):
+        plant.update(input_signal=1.0, dt=0.1)
+
+    output_2 = plant.output
+    assert output_2 > output_1
+
+def test_output_continues_changing_after_input_becomes_zero():
+    plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant.update(input_signal=1.0, dt=0.1)
+    output_before = plant.output
+    output_after = plant.update(input_signal=0.0, dt=0.1)
+    assert output_after > output_before
+
+def test_larger_time_constant_gives_slower_response():
+    fast_plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=1.0)
+    slow_plant = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    fast_output = fast_plant.update(input_signal=1.0, dt=0.1)
+    slow_output = slow_plant.update(input_signal=1.0, dt=0.1)
+    assert fast_output > slow_output
+
+def test_larger_dt_gives_larger_first_step():
+    plant_1 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant_2 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
+    output_1 = plant_1.update(input_signal=1.0, dt=0.1)
+    output_2 = plant_2.update(input_signal=1.0, dt=0.5)
+    assert output_1 == pytest.approx(0.003921569)
+    assert output_2 == pytest.approx(0.090909091)
+    assert output_2 > output_1
+    
