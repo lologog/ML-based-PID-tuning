@@ -14,7 +14,7 @@ from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
 
 import matplotlib.pyplot as plt
 
-def run_simulation(plant, input_signal=1.0, simulation_time=60.0, dt=0.1):
+def run_simulation(plant, input_signal, simulation_time, dt):
     current_time = 0.0
     step_number = 0
 
@@ -62,4 +62,4 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    run_simulation(plant2)
+    run_simulation(plant=plant2, input_signal=1.0, simulation_time=60.0, dt=0.1)
