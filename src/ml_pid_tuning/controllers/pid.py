@@ -9,8 +9,14 @@ class PIDController:
 
     def update(self, error, dt):
         self.integral += error * dt
-        derivative = (error - self.previous_error) / dt
-        control_signal = self.kp * (error + self.integral / self.ti + self.td * derivative)
+
+        integral_term = 0.0
+        if self.ti > 0.0:
+            integral_term = self.integral / self.ti
+
+        derivative_term = (error - self.previous_error) / dt
+
+        control_signal = self.kp * (error + integral_term + self.td * derivative_term)
         self.previous_error = error
 
         return control_signal
