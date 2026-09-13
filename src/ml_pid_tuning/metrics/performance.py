@@ -47,3 +47,8 @@ def calculate_settling_time(time_values, output_values, setpoint, tolerance=0.02
             return time_values[i]
 
     return None
+
+def calculate_steady_state_error(output_values, setpoint):
+    steady_state_error = abs(setpoint - output_values[-1])
+
+    return steady_state_error

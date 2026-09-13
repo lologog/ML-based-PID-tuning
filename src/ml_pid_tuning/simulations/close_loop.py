@@ -13,7 +13,7 @@ from ml_pid_tuning.plants.unstable_first_order import UnstableFirstOrderPlant
 from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
 
 from ml_pid_tuning.controllers.pid import PIDController
-from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time
+from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time, calculate_steady_state_error
 import matplotlib.pyplot as plt
 
 def run_simulation(plant, controller, setpoint, simulation_time, dt):
@@ -54,6 +54,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     itae = calculate_itae(time_values, error_values)
     overshoot = calculate_overshoot(output_values, setpoint)
     settling_time = calculate_settling_time(time_values, output_values, setpoint)
+    steady_state_error = calculate_steady_state_error(output_values, setpoint)
 
     print()
     print("Performance metrics")
@@ -62,6 +63,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     print(f"ITAE: {itae:.4f}")
     print(f"Overshoot: {overshoot:.2f}%")
     print(f"Settling time: {settling_time}")
+    print(f"Steady-state error: {steady_state_error:.4f}")
 
     plt.plot(time_values, output_values, label="Output")
     plt.plot(time_values, setpoint_values, label="Setpoint")
