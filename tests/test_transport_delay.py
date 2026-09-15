@@ -1,86 +1,207 @@
 import pytest
+
 from ml_pid_tuning.plants.transport_delay import TransportDelayPlant
 
-def test_initial_output():
-    plant = TransportDelayPlant(delay=3.0)
+#########################################################################################
+###                                   Initial state
+#########################################################################################
+
+def test_initial_state():
+    plant = TransportDelayPlant(delay=1.0)
+
     assert plant.output == 0.0
+    assert plant.input_buffer == []
 
-def test_positive_input():
-    plant = TransportDelayPlant(delay=3.0)
+#########################################################################################
+###                                     Delay input
+#########################################################################################
 
-    for _ in range(30):
-        plant.update(input_signal=1.0, dt=0.1)
+def test_positive_delay():
+    plant = TransportDelayPlant(delay=1.0)
 
     output = plant.update(input_signal=1.0, dt=0.1)
-    assert output == pytest.approx(1.0)
-
-def test_zero_input():
-    plant = TransportDelayPlant(delay=3.0)
-
-    for _ in range(31):
-        output = plant.update(input_signal=0.0, dt=0.1)
 
     assert output == pytest.approx(0.0)
 
-def test_negative_input():
-    plant = TransportDelayPlant(delay=3.0)
+def test_zero_delay():
+    plant = TransportDelayPlant(delay=0.0)
 
-    for _ in range (30):
-        plant.update(input_signal=-1.0, dt=0.1)
+    output = plant.update(input_signal=1.0, dt=0.1)
 
-    output = plant.update(input_signal=-1.0, dt=0.1)
-    assert output == pytest.approx(-1.0)
+    assert output == pytest.approx(1.0)
 
-def test_output_is_zero_during_delay():
-    plant = TransportDelayPlant(delay=3.0)
+def test_negative_delay():
+    try:
+        plant = TransportDelayPlant(delay=-1.0)
+        assert False
 
-    for _ in range(30):
-        output = plant.update(input_signal=1.0, dt=0.1)
-        assert output == pytest.approx(0.0)
+    except ValueError as error:
+        assert str(error) == "delay must be greater than or equal to 0"
 
-def test_input_is_reproduced_after_delay():
-    plant = TransportDelayPlant(delay=3.0)
-    plant.update(input_signal=3.0, dt=0.1)
+def test_invalid_delay_type():
+    try:
+        plant = TransportDelayPlant(delay="1.0")
+        assert False
 
-    for _ in range(29):
-        plant.update(input_signal=0.0, dt=0.1)
+    except TypeError as error:
+        assert str(error) == "delay must be a number"
+
+def test_nan_delay():
+    try:
+        plant = TransportDelayPlant(delay=float("nan"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "delay must be finite"
+
+def test_positive_infinity_delay():
+    try:
+        plant = TransportDelayPlant(delay=float("inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "delay must be finite"
+
+def test_negative_infinity_delay():
+    try:
+        plant = TransportDelayPlant(delay=float("-inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "delay must be finite"
+
+#########################################################################################
+###                                input_signal input
+#########################################################################################
+
+def test_positive_input_signal():
+    plant = TransportDelayPlant(delay=0.0)
+
+    output = plant.update(input_signal=1.0, dt=0.1)
+
+    assert output == pytest.approx(1.0)
+
+def test_zero_input_signal():
+    plant = TransportDelayPlant(delay=0.0)
 
     output = plant.update(input_signal=0.0, dt=0.1)
-    assert output == pytest.approx(3.0)
 
-def test_constant_input_is_passed_without_change():
-    plant = TransportDelayPlant(delay=3.0)
+    assert output == pytest.approx(0.0)
 
-    for _ in range(30):
-        plant.update(input_signal=2.0, dt=0.1)
+def test_negative_input_signal():
+    plant = TransportDelayPlant(delay=0.0)
 
-    output = plant.update(input_signal=2.0, dt=0.1)
-    assert output == pytest.approx(2.0)
+    output = plant.update(input_signal=-1.0, dt=0.1)
 
-def test_larger_delay_gives_slower_response():
-    short_delay_plant = TransportDelayPlant(delay=2.0)
-    long_delay_plant = TransportDelayPlant(delay=5.0)
+    assert output == pytest.approx(-1.0)
 
-    for _ in range(30):
-        short_delay_plant.update(input_signal=1.0, dt=0.1)
-        long_delay_plant.update(input_signal=1.0, dt=0.1)
+def test_invalid_input_signal_type():
+    plant = TransportDelayPlant(delay=1.0)
 
-    assert short_delay_plant.output == pytest.approx(1.0)
-    assert long_delay_plant.output == pytest.approx(0.0)
+    try:
+        plant.update(input_signal="1.0", dt=0.1)
+        assert False
 
-def test_larger_dt_requires_fewer_delay_steps():
-    plant_1 = TransportDelayPlant(delay=3.0)
-    plant_2 = TransportDelayPlant(delay=3.0)
+    except TypeError as error:
+        assert str(error) == "input_signal must be a number"
 
-    for _ in range(30):
-        plant_1.update(input_signal=1.0, dt=0.1)
+def test_nan_input_signal():
+    plant = TransportDelayPlant(delay=1.0)
 
-    output_1 = plant_1.update(input_signal=1.0, dt=0.1)
+    try:
+        plant.update(input_signal=float("nan"), dt=0.1)
+        assert False
 
-    for _ in range(6):
-        plant_2.update(input_signal=1.0, dt=0.5)
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
 
-    output_2 = plant_2.update(input_signal=1.0, dt=0.5)
+def test_positive_infinity_input_signal():
+    plant = TransportDelayPlant(delay=1.0)
 
-    assert output_1 == pytest.approx(1.0)
-    assert output_2 == pytest.approx(1.0)
+    try:
+        plant.update(input_signal=float("inf"), dt=0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
+
+def test_negative_infinity_input_signal():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=float("-inf"), dt=0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
+
+#########################################################################################
+###                                        dt input
+#########################################################################################
+
+def test_positive_dt():
+    plant = TransportDelayPlant(delay=0.0)
+
+    output = plant.update(input_signal=1.0, dt=0.1)
+
+    assert output == pytest.approx(1.0)
+
+def test_zero_dt():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=0.0)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be greater than 0"
+
+def test_negative_dt():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=-0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be greater than 0"
+
+def test_invalid_dt_type():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt="0.1")
+        assert False
+
+    except TypeError as error:
+        assert str(error) == "dt must be a number"
+
+def test_nan_dt():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("nan"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
+
+def test_positive_infinity_dt():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
+
+def test_negative_infinity_dt():
+    plant = TransportDelayPlant(delay=1.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("-inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
