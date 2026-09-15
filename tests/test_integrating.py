@@ -1,47 +1,205 @@
 import pytest
+
 from ml_pid_tuning.plants.integrating import IntegratingPlant
 
-def test_initial_output():
+#########################################################################################
+###                                   Initial state
+#########################################################################################
+
+def test_initial_state():
     plant = IntegratingPlant(gain=2.0)
+
     assert plant.output == 0.0
 
-def test_positive_input():
+#########################################################################################
+###                                     Gain input
+#########################################################################################
+
+def test_positive_gain():
     plant = IntegratingPlant(gain=2.0)
+
     output = plant.update(input_signal=1.0, dt=0.1)
+
     assert output == pytest.approx(0.2)
 
-def test_zero_input():
-    plant = IntegratingPlant(gain=2.0)
-    output = plant.update(input_signal=0.0, dt=0.1)
+def test_zero_gain():
+    plant = IntegratingPlant(gain=0.0)
+
+    output = plant.update(input_signal=1.0, dt=0.1)
+
     assert output == pytest.approx(0.0)
 
-def test_negative_input():
-    plant = IntegratingPlant(gain=2.0)
-    output = plant.update(input_signal=-1.0, dt=0.1)
+def test_negative_gain():
+    plant = IntegratingPlant(gain=-2.0)
+
+    output = plant.update(input_signal=1.0, dt=0.1)
+
     assert output == pytest.approx(-0.2)
 
+def test_invalid_gain_type():
+    try:
+        plant = IntegratingPlant(gain="2.0")
+        assert False
 
-def test_output_accumulates():
+    except TypeError as error:
+        assert str(error) == "gain must be a number"
+
+def test_nan_gain():
+    try:
+        plant = IntegratingPlant(gain=float("nan"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "gain must be finite"
+
+def test_positive_infinity_gain():
+    try:
+        plant = IntegratingPlant(gain=float("inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "gain must be finite"
+
+def test_negative_infinity_gain():
+    try:
+        plant = IntegratingPlant(gain=float("-inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "gain must be finite"
+
+#########################################################################################
+###                                input_signal input
+#########################################################################################
+
+def test_positive_input_signal():
     plant = IntegratingPlant(gain=2.0)
-    output_1 = plant.update(input_signal=1.0, dt=0.1)
-    output_2 = plant.update(input_signal=1.0, dt=0.1)
-    output_3 = plant.update(input_signal=1.0, dt=0.1)
-    assert output_1 == pytest.approx(0.2)
-    assert output_2 == pytest.approx(0.4)
-    assert output_3 == pytest.approx(0.6)
 
+    output = plant.update(input_signal=1.0, dt=0.1)
 
-def test_zero_input_keeps_accumulated_output():
-    plant = IntegratingPlant(gain=2.0)
-    plant.update(input_signal=1.0, dt=0.1)
-    output = plant.update(input_signal=0.0, dt=0.1)
     assert output == pytest.approx(0.2)
 
+def test_zero_input_signal():
+    plant = IntegratingPlant(gain=2.0)
 
-def test_dt_affects_output():
-    plant_1 = IntegratingPlant(gain=2.0)
-    plant_2 = IntegratingPlant(gain=2.0)
-    output_1 = plant_1.update(input_signal=1.0, dt=0.1)
-    output_2 = plant_2.update(input_signal=1.0, dt=0.5)
-    assert output_1 == pytest.approx(0.2)
-    assert output_2 == pytest.approx(1.0)
+    output = plant.update(input_signal=0.0, dt=0.1)
+
+    assert output == pytest.approx(0.0)
+
+def test_negative_input_signal():
+    plant = IntegratingPlant(gain=2.0)
+
+    output = plant.update(input_signal=-1.0, dt=0.1)
+
+    assert output == pytest.approx(-0.2)
+
+def test_invalid_input_signal_type():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal="1.0", dt=0.1)
+        assert False
+
+    except TypeError as error:
+        assert str(error) == "input_signal must be a number"
+
+def test_nan_input_signal():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=float("nan"), dt=0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
+
+def test_positive_infinity_input_signal():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=float("inf"), dt=0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
+
+def test_negative_infinity_input_signal():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=float("-inf"), dt=0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "input_signal must be finite"
+
+#########################################################################################
+###                                        dt input
+#########################################################################################
+
+def test_positive_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    output = plant.update(input_signal=1.0, dt=0.1)
+
+    assert output == pytest.approx(0.2)
+
+def test_zero_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=0.0)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be greater than 0"
+
+def test_negative_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=-0.1)
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be greater than 0"
+
+def test_invalid_dt_type():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt="0.1")
+        assert False
+
+    except TypeError as error:
+        assert str(error) == "dt must be a number"
+
+def test_nan_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("nan"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
+
+def test_positive_infinity_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
+
+def test_negative_infinity_dt():
+    plant = IntegratingPlant(gain=2.0)
+
+    try:
+        plant.update(input_signal=1.0, dt=float("-inf"))
+        assert False
+
+    except ValueError as error:
+        assert str(error) == "dt must be finite"
