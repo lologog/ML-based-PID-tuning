@@ -29,7 +29,7 @@ def objective(parameters, plant_factory):
         return 1000000000.0
 
 def optimize_pid(plant_factory):
-    bounds = [(0.01, 10.0), (0.1, 20.0), (0.0, 5.0)]
+    bounds = [(0.01, 10.0), (0.1, 50.0), (0.0, 10.0)]
     result = differential_evolution(objective, bounds, args=(plant_factory,))
     best_kp, best_ti, best_td = result.x
     return {
