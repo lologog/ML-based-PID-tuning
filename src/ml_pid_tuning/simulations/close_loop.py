@@ -62,7 +62,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
 
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
-    plant2 = FirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant2 = FirstOrderPlant(gain=2.2585, time_constant=2.2869)
     plant3 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = pid = PIDController(kp=2.0280, ti=4.9755, td=0.0000)
+    pid = pid = PIDController(kp=1.942, ti=2.141, td=0.0000)
 
     results = run_simulation(plant=plant2, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
 
