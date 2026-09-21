@@ -40,3 +40,13 @@ services:
     depends_on:
       open_loop:
         condition: service_completed_successfully
+
+  otpimization:
+    build:
+      context: .
+
+    command: python src/ml_pid_tuning/optimization/differential_evolution.py
+
+    depends_on:
+      close_loop:
+        condition: service_completed_successfully

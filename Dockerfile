@@ -8,7 +8,7 @@ FROM python:3.14-slim
 WORKDIR /app
 
 # Install required Python packages
-RUN pip install pytest matplotlib
+RUN pip install pytest matplotlib scipy
 
 # Copy project files into the image
 COPY src ./src
