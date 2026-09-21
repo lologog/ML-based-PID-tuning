@@ -1,14 +1,13 @@
 import math
 from scipy.optimize import differential_evolution
-from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.controllers.pid import PIDController
 from ml_pid_tuning.simulations.close_loop import run_simulation
 
 
-def objective(parameters):
+def objective(parameters, plant_factory):
     kp, ti, td = parameters
 
-    plant = FirstOrderPlant(gain=2.0, time_constant=5.0)
+    plant = plant_factory()
     controller = PIDController(kp=kp, ti=ti, td=td)
 
     try:
@@ -29,19 +28,13 @@ def objective(parameters):
     except (ValueError, OverflowError):
         return 1000000000.0
 
-
-def main():
+def optimize_pid(plant_factory):
     bounds = [(0.01, 10.0), (0.1, 20.0), (0.0, 5.0)]
-
-    result = differential_evolution(objective, bounds)
+    result = differential_evolution(objective, bounds, args=(plant_factory,))
     best_kp, best_ti, best_td = result.x
-
-    print("Best PID parameters")
-    print("Kp:", round(best_kp, 4))
-    print("Ti:", round(best_ti, 4))
-    print("Td:", round(best_td, 4))
-    print("Objective value:", round(result.fun, 4))
-
-
-if __name__ == "__main__":
-    main()
+    return {
+        "kp": best_kp,
+        "ti": best_ti,
+        "td": best_td,
+        "objective": result.fun
+    }

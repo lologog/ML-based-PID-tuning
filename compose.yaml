@@ -15,6 +15,7 @@ services:
 
     command: pytest -v
 
+
   open_loop:
     build:
       context: .
@@ -27,6 +28,7 @@ services:
     depends_on:
       tests:
         condition: service_completed_successfully
+
 
   close_loop:
     build:
@@ -41,11 +43,15 @@ services:
       open_loop:
         condition: service_completed_successfully
 
-  otpimization:
+
+  generate_data:
     build:
       context: .
 
-    command: python src/ml_pid_tuning/optimization/differential_evolution.py
+    volumes:
+      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
+
+    command: python src/ml_pid_tuning/data/generate_first_order_dataset.py
 
     depends_on:
       close_loop:
