@@ -44,7 +44,7 @@ services:
         condition: service_completed_successfully
 
 
-  generate_data:
+  generate_first_order_data:
     build:
       context: .
 
@@ -52,6 +52,20 @@ services:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
     command: python src/ml_pid_tuning/data/generate_first_order_dataset.py
+
+    depends_on:
+      close_loop:
+        condition: service_completed_successfully
+
+
+  generate_second_order_data:
+    build:
+      context: .
+
+    volumes:
+      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
+
+    command: python src/ml_pid_tuning/data/generate_second_order_dataset.py
 
     depends_on:
       close_loop:
