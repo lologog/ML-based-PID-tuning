@@ -18,7 +18,6 @@ import matplotlib.pyplot as plt
 
 def run_simulation(plant, controller, setpoint, simulation_time, dt):
     current_time = 0.0
-    step_number = 0
 
     time_values = []
     output_values = []
@@ -26,13 +25,8 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     error_values = []
     control_signal_values = []
 
-    print("Closed-loop simulation with PID controller")
-    print()
-    print("Time [s]\tSetpoint\tOutput\t\tControl")
-
     while current_time <= simulation_time:
         error = setpoint - plant.output
-
         control_signal = controller.update(error=error, dt=dt)
 
         time_values.append(current_time)
@@ -41,13 +35,9 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
         error_values.append(error)
         control_signal_values.append(control_signal)
 
-        if step_number % 10 == 0:
-            print(f"{current_time:8.1f}\t{setpoint:8.2f}\t{plant.output:8.4f}\t{control_signal:8.4f}")
-
         plant.update(input_signal=control_signal, dt=dt)
 
         current_time += dt
-        step_number += 1
 
     iae = calculate_iae(time_values, error_values)
     ise = calculate_ise(time_values, error_values)
@@ -56,26 +46,19 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     settling_time = calculate_settling_time(time_values, output_values, setpoint)
     steady_state_error = calculate_steady_state_error(output_values, setpoint)
 
-    print()
-    print("Performance metrics")
-    print(f"IAE: {iae:.4f}")
-    print(f"ISE: {ise:.4f}")
-    print(f"ITAE: {itae:.4f}")
-    print(f"Overshoot: {overshoot:.2f}%")
-    print(f"Settling time: {settling_time}")
-    print(f"Steady-state error: {steady_state_error:.4f}")
-
-    plt.plot(time_values, output_values, label="Output")
-    plt.plot(time_values, setpoint_values, label="Setpoint")
-
-    plt.xlabel("Time [s]")
-    plt.ylabel("Output")
-    plt.title("Closed-loop PID response")
-    plt.grid()
-    plt.legend()
-
-    plt.savefig("plots/closed_loop_response.png")
-    plt.close()
+    return {
+        "time": time_values,
+        "output": output_values,
+        "setpoint": setpoint_values,
+        "error": error_values,
+        "control_signal": control_signal_values,
+        "iae": iae,
+        "ise": ise,
+        "itae": itae,
+        "overshoot": overshoot,
+        "settling_time": settling_time,
+        "steady_state_error": steady_state_error
+    }
 
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
@@ -92,6 +75,33 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = PIDController(kp=1.5, ti=4.0, td=0.1)
+    pid = pid = PIDController(kp=2.0280, ti=4.9755, td=0.0000)
 
-    run_simulation(plant=plant2, controller=pid, setpoint=2.0, simulation_time=60.0, dt=0.1)
+    results = run_simulation(plant=plant2, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
+
+    print("Performance metrics")
+    print("IAE:", round(results["iae"], 4))
+    print("ISE:", round(results["ise"], 4))
+    print("ITAE:", round(results["itae"], 4))
+    print("Overshoot:", round(results["overshoot"], 2), "%")
+    print("Settling time:", results["settling_time"])
+    print("Steady-state error:", round(results["steady_state_error"], 4))
+
+    plt.plot(results["time"], results["output"], label="Output")
+    plt.plot(results["time"], results["setpoint"], label="Setpoint")
+    plt.xlabel("Time [s]")
+    plt.ylabel("Output")
+    plt.title("Closed-loop PID response")
+    plt.grid()
+    plt.legend()
+    plt.savefig("plots/closed_loop_response.png")
+    plt.close()
+
+    plt.plot(results["time"], results["control_signal"], label="Control signal")
+    plt.xlabel("Time [s]")
+    plt.ylabel("Control signal")
+    plt.title("PID control signal")
+    plt.grid()
+    plt.legend()
+    plt.savefig("plots/control_signal.png")
+    plt.close()
