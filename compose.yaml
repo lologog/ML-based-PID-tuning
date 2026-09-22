@@ -84,3 +84,17 @@ services:
     depends_on:
       generate_first_order_data:
         condition: service_completed_successfully
+
+
+  train_second_order_model:
+    build:
+      context: .
+
+    volumes:
+      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
+
+    command: python src/ml_pid_tuning/ml/train_second_order.py
+    
+    depends_on:
+      generate_second_order_data:
+        condition: service_completed_successfully

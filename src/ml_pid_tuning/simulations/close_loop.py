@@ -63,7 +63,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
     plant2 = FirstOrderPlant(gain=2.2585, time_constant=2.2869)
-    plant3 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
+    plant3 = SecondOrderPlant(gain=1.0608, time_constant_1=8.6937, time_constant_2=8.7108)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant6 = DifferentiatingPlant(gain=2.0)
@@ -75,9 +75,9 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = pid = PIDController(kp=1.942, ti=2.141, td=0.0000)
+    pid = pid = PIDController(kp=2.1565, ti=17.6427, td=0.0042)
 
-    results = run_simulation(plant=plant2, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
+    results = run_simulation(plant=plant3, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
 
     print("Performance metrics")
     print("IAE:", round(results["iae"], 4))

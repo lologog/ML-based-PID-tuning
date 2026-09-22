@@ -4,9 +4,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
 def main():
-    data = pd.read_csv("src/ml_pid_tuning/data/datasets/first_order_dataset.csv")
+    data = pd.read_csv("src/ml_pid_tuning/data/datasets/second_order_dataset.csv")
 
-    X = data[["gain", "time_constant"]]
+    X = data[["gain", "time_constant_1", "time_constant_2"]]
     y = data[["kp", "ti", "td"]]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -31,7 +31,8 @@ def main():
 
     for i in range(len(predictions)):
         gain = X_test.iloc[i]["gain"]
-        time_constant = X_test.iloc[i]["time_constant"]
+        time_constant_1 = X_test.iloc[i]["time_constant_1"]
+        time_constant_2 = X_test.iloc[i]["time_constant_2"]
 
         predicted_kp = predictions[i][0]
         predicted_ti = predictions[i][1]
@@ -40,7 +41,8 @@ def main():
         print()
         print("Object parameters")
         print("Gain:", round(gain, 4))
-        print("Time constant:", round(time_constant, 4))
+        print("Time constant 1:", round(time_constant_1, 4))
+        print("Time constant 2:", round(time_constant_2, 4))
 
         print("Predicted PID parameters")
         print("Kp:", round(predicted_kp, 4))
