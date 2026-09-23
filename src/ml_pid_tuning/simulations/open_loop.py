@@ -58,7 +58,7 @@ def run_simulation(plant, input_signal, simulation_time, dt):
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
     plant2 = FirstOrderPlant(gain=2.0, time_constant=5.0)
-    plant3 = SecondOrderPlant(gain=2.0, time_constant_1=3.0, time_constant_2=5.0)
+    plant3 = SecondOrderPlant(gain=4.958, time_constant_1=3.5553, time_constant_2=7.8527)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant6 = DifferentiatingPlant(gain=2.0)
@@ -70,4 +70,4 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    run_simulation(plant=plant2, input_signal=1.0, simulation_time=60.0, dt=0.1)
+    run_simulation(plant=plant3, input_signal=1.0, simulation_time=60.0, dt=0.1)

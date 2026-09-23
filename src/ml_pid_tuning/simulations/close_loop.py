@@ -14,7 +14,7 @@ from ml_pid_tuning.plants.unstable_first_order import UnstableFirstOrderPlant
 from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
 
 from ml_pid_tuning.controllers.pid import PIDController
-from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time, calculate_steady_state_error
+from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time, calculate_steady_state_error, calculate_max_control, calculate_isu
 import matplotlib.pyplot as plt
 
 def run_simulation(plant, controller, setpoint, simulation_time, dt):
@@ -46,6 +46,8 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     overshoot = calculate_overshoot(output_values, setpoint)
     settling_time = calculate_settling_time(time_values, output_values, setpoint)
     steady_state_error = calculate_steady_state_error(output_values, setpoint)
+    max_control = calculate_max_control(control_signal_values)
+    isu = calculate_isu(time_values, control_signal_values)
 
     return {
         "time": time_values,
@@ -58,13 +60,15 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
         "itae": itae,
         "overshoot": overshoot,
         "settling_time": settling_time,
-        "steady_state_error": steady_state_error
+        "steady_state_error": steady_state_error,
+        "max_control": max_control,
+        "isu": isu
     }
 
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
     plant2 = FirstOrderPlant(gain=2.2585, time_constant=2.2869)
-    plant3 = SecondOrderPlant(gain=1.0608, time_constant_1=8.6937, time_constant_2=8.7108)
+    plant3 = SecondOrderPlant(gain=4.958, time_constant_1=3.5553, time_constant_2=7.8527)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant6 = DifferentiatingPlant(gain=2.0)
@@ -76,7 +80,7 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = PIDController(kp=2.1565, ti=17.6427, td=0.0042)
+    pid = PIDController(kp=1.2966, ti=9.8089, td=1.3689)
 
     results = run_simulation(plant=plant3, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
 
@@ -94,6 +98,8 @@ if __name__ == "__main__":
     print("Overshoot:", round(results["overshoot"], 2), "%")
     print("Settling time:", results["settling_time"])
     print("Steady-state error:", round(results["steady_state_error"], 4))
+    print("Max control signal:", round(results["max_control"], 4))
+    print("ISU:", round(results["isu"], 4))
 
     plt.plot(results["time"], results["output"], label="Output")
     plt.plot(results["time"], results["setpoint"], label="Setpoint")
