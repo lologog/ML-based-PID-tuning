@@ -10,10 +10,8 @@ def objective(parameters, plant_factory):
     plant = plant_factory()
     controller = PIDController(kp=kp, ti=ti, td=td)
 
-    dt = 0.1
-
     try:
-        results = run_simulation(plant=plant, controller=controller, setpoint=10.0, simulation_time=60.0, dt=dt)
+        results = run_simulation(plant=plant, controller=controller, setpoint=10.0, simulation_time=60.0, dt=0.1)
         itae = results["itae"]
 
         if not math.isfinite(itae):
