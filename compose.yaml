@@ -36,6 +36,7 @@ services:
 
     volumes:
       - ./plots:/app/plots
+      - ./src/ml_pid_tuning/simulations/data:/app/src/ml_pid_tuning/simulations/data
 
     command: python src/ml_pid_tuning/simulations/close_loop.py
 

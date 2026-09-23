@@ -1,3 +1,4 @@
+import csv
 from ml_pid_tuning.plants.proportional import ProportionalPlant
 from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.plants.second_order import SecondOrderPlant
@@ -75,9 +76,16 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = pid = PIDController(kp=2.1565, ti=17.6427, td=0.0042)
+    pid = PIDController(kp=2.1565, ti=17.6427, td=0.0042)
 
     results = run_simulation(plant=plant3, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
+
+    with open("src/ml_pid_tuning/simulations/data/closed_loop_data.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["time", "setpoint", "output", "error", "control_signal"])
+
+        for i in range(len(results["time"])):
+            writer.writerow([results["time"][i], results["setpoint"][i], results["output"][i], results["error"][i], results["control_signal"][i]])
 
     print("Performance metrics")
     print("IAE:", round(results["iae"], 4))
