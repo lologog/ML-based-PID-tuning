@@ -1,3 +1,4 @@
+import csv
 from ml_pid_tuning.plants.proportional import ProportionalPlant
 from ml_pid_tuning.plants.first_order import FirstOrderPlant
 from ml_pid_tuning.plants.second_order import SecondOrderPlant
@@ -36,6 +37,13 @@ def run_simulation(plant, input_signal, simulation_time, dt):
 
         current_time += dt
         step_number += 1
+
+    with open("src/ml_pid_tuning/simulations/data/open_loop_data.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["time", "input", "output"])
+
+        for i in range(len(time_values)):
+            writer.writerow([time_values[i], input_signal, output_values[i]])
 
     plt.plot(time_values, output_values)
 
