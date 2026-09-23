@@ -1,3 +1,4 @@
 plots/
 .vscode/
 src/ml_pid_tuning/data/datasets/
+src/ml_pid_tuning/simulations/data/
