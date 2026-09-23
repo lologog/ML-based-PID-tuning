@@ -19,12 +19,7 @@ def objective(parameters, plant_factory):
         if not math.isfinite(itae):
             return 1000000000.0
 
-        isu = 0.0
-        for value in results["control_signal"]:
-            isu += value ** 2 * dt
-
-        objective_value = itae + 0.01 * isu
-        return objective_value
+        return itae
 
     except (ValueError, OverflowError):
         return 1000000000.0

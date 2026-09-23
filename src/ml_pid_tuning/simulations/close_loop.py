@@ -14,7 +14,7 @@ from ml_pid_tuning.plants.unstable_first_order import UnstableFirstOrderPlant
 from ml_pid_tuning.plants.first_order_zero import FirstOrderZeroPlant
 
 from ml_pid_tuning.controllers.pid import PIDController
-from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time, calculate_steady_state_error, calculate_max_control, calculate_isu
+from ml_pid_tuning.metrics.performance import calculate_iae, calculate_ise, calculate_itae, calculate_overshoot, calculate_settling_time, calculate_steady_state_error
 import matplotlib.pyplot as plt
 
 def run_simulation(plant, controller, setpoint, simulation_time, dt):
@@ -46,8 +46,6 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
     overshoot = calculate_overshoot(output_values, setpoint)
     settling_time = calculate_settling_time(time_values, output_values, setpoint)
     steady_state_error = calculate_steady_state_error(output_values, setpoint)
-    max_control = calculate_max_control(control_signal_values)
-    isu = calculate_isu(time_values, control_signal_values)
 
     return {
         "time": time_values,
@@ -60,9 +58,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
         "itae": itae,
         "overshoot": overshoot,
         "settling_time": settling_time,
-        "steady_state_error": steady_state_error,
-        "max_control": max_control,
-        "isu": isu
+        "steady_state_error": steady_state_error
     }
 
 if __name__ == "__main__":
@@ -98,8 +94,6 @@ if __name__ == "__main__":
     print("Overshoot:", round(results["overshoot"], 2), "%")
     print("Settling time:", results["settling_time"])
     print("Steady-state error:", round(results["steady_state_error"], 4))
-    print("Max control signal:", round(results["max_control"], 4))
-    print("ISU:", round(results["isu"], 4))
 
     plt.plot(results["time"], results["output"], label="Output")
     plt.plot(results["time"], results["setpoint"], label="Setpoint")
