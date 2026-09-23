@@ -10,20 +10,21 @@ def objective(parameters, plant_factory):
     plant = plant_factory()
     controller = PIDController(kp=kp, ti=ti, td=td)
 
+    dt = 0.1
+
     try:
-        results = run_simulation(plant=plant, controller=controller, setpoint=10.0, simulation_time=60.0, dt=0.1)
+        results = run_simulation(plant=plant, controller=controller, setpoint=10.0, simulation_time=60.0, dt=dt)
         itae = results["itae"]
 
         if not math.isfinite(itae):
             return 1000000000.0
 
-        max_control = max(abs(value) for value in results["control_signal"])
-        penalty = 0.0
+        isu = 0.0
+        for value in results["control_signal"]:
+            isu += value ** 2 * dt
 
-        if max_control > 20.0:
-            penalty = (max_control - 20.0) ** 2
-
-        return itae + penalty
+        objective_value = itae + 0.01 * isu
+        return objective_value
 
     except (ValueError, OverflowError):
         return 1000000000.0
