@@ -94,7 +94,7 @@ services:
         condition: service_completed_successfully
 
 
-  train_first_order_model:
+  train_first_order_random_forest:
     profiles: ["first_order"]
 
     build:
@@ -110,7 +110,7 @@ services:
         condition: service_completed_successfully
 
 
-  train_second_order_model:
+  train_second_order_random_forest:
     profiles: ["second_order"]
 
     build:
@@ -126,7 +126,7 @@ services:
         condition: service_completed_successfully
 
   
-  train_integrating_first_order_model:
+  train_integrating_first_order_random_forest:
     profiles: ["integrating_first_order"]
 
     build:
@@ -136,6 +136,22 @@ services:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
     command: python src/ml_pid_tuning/ml/random_forest_regressor/train_integrating_first_order.py
+
+    depends_on:
+      generate_integrating_first_order_data:
+        condition: service_completed_successfully
+
+
+  train_integrating_first_order_mlp:
+    profiles: ["integrating_first_order"]
+
+    build:
+      context: .
+
+    volumes:
+      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
+
+    command: python src/ml_pid_tuning/ml/mlp_regressor/train_integrating_first_order.py
 
     depends_on:
       generate_integrating_first_order_data:
