@@ -47,6 +47,8 @@ services:
 
 
   generate_first_order_data:
+    profiles: ["first_order"]
+
     build:
       context: .
 
@@ -61,6 +63,8 @@ services:
 
 
   generate_second_order_data:
+    profiles: ["second_order"]
+
     build:
       context: .
 
