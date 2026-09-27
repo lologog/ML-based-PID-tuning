@@ -75,13 +75,15 @@ services:
 
 
   train_first_order_model:
+    profiles: ["first_order"]
+
     build:
       context: .
 
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/train_first_order.py
+    command: python src/ml_pid_tuning/ml/random_forest_regressor/train_first_order.py
 
     depends_on:
       generate_first_order_data:
@@ -89,13 +91,15 @@ services:
 
 
   train_second_order_model:
+    profiles: ["second_order"]
+
     build:
       context: .
 
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/train_second_order.py
+    command: python src/ml_pid_tuning/ml/random_forest_regressor/train_second_order.py
     
     depends_on:
       generate_second_order_data:
