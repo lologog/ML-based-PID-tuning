@@ -94,7 +94,7 @@ services:
         condition: service_completed_successfully
 
 
-  train_first_order_random_forest:
+  train_first_order:
     profiles: ["first_order"]
 
     build:
@@ -103,14 +103,14 @@ services:
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/random_forest_regressor/train_first_order.py
+    command: python src/ml_pid_tuning/ml/first_order/random_forest_regressor/train_first_order.py
 
     depends_on:
       generate_first_order_data:
         condition: service_completed_successfully
 
 
-  train_second_order_random_forest:
+  train_second_order:
     profiles: ["second_order"]
 
     build:
@@ -119,14 +119,14 @@ services:
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/random_forest_regressor/train_second_order.py
-    
+    command: python src/ml_pid_tuning/ml/second_order/random_forest_regressor/train_second_order.py
+
     depends_on:
       generate_second_order_data:
         condition: service_completed_successfully
 
   
-  train_integrating_first_order_random_forest:
+  train_integrating_first_order:
     profiles: ["integrating_first_order"]
 
     build:
@@ -135,56 +135,14 @@ services:
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/random_forest_regressor/train_integrating_first_order.py
+    command: >
+      sh -c "
+      python src/ml_pid_tuning/ml/integrating_first_order/random_forest_regressor/train_integrating_first_order.py &&
+      python src/ml_pid_tuning/ml/integrating_first_order/extra_trees_regressor/train_integrating_first_order.py &&
+      python src/ml_pid_tuning/ml/integrating_first_order/gradient_boosting_regressor/train_integrating_first_order.py &&
+      python src/ml_pid_tuning/ml/integrating_first_order/mlp_regressor/train_integrating_first_order.py
+      "
 
     depends_on:
       generate_integrating_first_order_data:
-        condition: service_completed_successfully
-
-
-  train_integrating_first_order_extra_trees:
-    profiles: ["integrating_first_order"]
-
-    build:
-      context: .
-
-    volumes:
-      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
-
-    command: python src/ml_pid_tuning/ml/extra_trees_regressor/train_integrating_first_order.py
-
-    depends_on:
-      train_integrating_first_order_random_forest:
-        condition: service_completed_successfully
-
-  
-  train_integrating_first_order_gradient_boosting:
-    profiles: ["integrating_first_order"]
-
-    build:
-      context: .
-
-    volumes:
-      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
-
-    command: python src/ml_pid_tuning/ml/gradient_boosting_regressor/train_integrating_first_order.py
-
-    depends_on:
-      train_integrating_first_order_extra_trees:
-        condition: service_completed_successfully
-
-
-  train_integrating_first_order_mlp:
-    profiles: ["integrating_first_order"]
-
-    build:
-      context: .
-
-    volumes:
-      - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
-
-    command: python src/ml_pid_tuning/ml/mlp_regressor/train_integrating_first_order.py
-
-    depends_on:
-      train_integrating_first_order_gradient_boosting:
         condition: service_completed_successfully
