@@ -154,7 +154,7 @@ services:
     command: python src/ml_pid_tuning/ml/extra_trees_regressor/train_integrating_first_order.py
 
     depends_on:
-      generate_integrating_first_order_data:
+      train_integrating_first_order_random_forest:
         condition: service_completed_successfully
 
   
@@ -170,7 +170,7 @@ services:
     command: python src/ml_pid_tuning/ml/gradient_boosting_regressor/train_integrating_first_order.py
 
     depends_on:
-      generate_integrating_first_order_data:
+      train_integrating_first_order_extra_trees:
         condition: service_completed_successfully
 
 
@@ -186,5 +186,5 @@ services:
     command: python src/ml_pid_tuning/ml/mlp_regressor/train_integrating_first_order.py
 
     depends_on:
-      generate_integrating_first_order_data:
+      train_integrating_first_order_gradient_boosting:
         condition: service_completed_successfully
