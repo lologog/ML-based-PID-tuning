@@ -137,9 +137,16 @@ services:
 
     command: >
       sh -c "
+      echo '===== RANDOM FOREST =====' &&
       python src/ml_pid_tuning/ml/integrating_first_order/random_forest_regressor/train_integrating_first_order.py &&
+
+      echo '===== EXTRA TREES =====' &&
       python src/ml_pid_tuning/ml/integrating_first_order/extra_trees_regressor/train_integrating_first_order.py &&
+
+      echo '===== GRADIENT BOOSTING =====' &&
       python src/ml_pid_tuning/ml/integrating_first_order/gradient_boosting_regressor/train_integrating_first_order.py &&
+
+      echo '===== MLP =====' &&
       python src/ml_pid_tuning/ml/integrating_first_order/mlp_regressor/train_integrating_first_order.py
       "
 
