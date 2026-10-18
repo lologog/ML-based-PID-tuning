@@ -63,7 +63,7 @@ def run_simulation(plant, controller, setpoint, simulation_time, dt):
 
 if __name__ == "__main__":
     plant1 = ProportionalPlant(gain=2.0)
-    plant2 = FirstOrderPlant(gain=2.2585, time_constant=2.2869)
+    plant2 = FirstOrderPlant(gain=2.5, time_constant=4.0)
     plant3 = SecondOrderPlant(gain=4.958, time_constant_1=3.5553, time_constant_2=7.8527)
     plant4 = IntegratingPlant(gain=2.0)
     plant5 = IntegratingFirstOrderPlant(gain=2.5, time_constant=4.0)
@@ -76,9 +76,9 @@ if __name__ == "__main__":
     plant12 = UnstableFirstOrderPlant(gain=2.0, time_constant=5.0)
     plant13 = FirstOrderZeroPlant(gain=2.0, time_constant=5.0, zero_time_constant=2.0)
 
-    pid = PIDController(kp=10.0, ti=4.8887, td=0.7155)
+    pid = PIDController(kp=9.8596, ti=4.0232, td=0.0)
 
-    results = run_simulation(plant=plant5, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
+    results = run_simulation(plant=plant2, controller=pid, setpoint=10.0, simulation_time=60.0, dt=0.1)
 
     with open("src/ml_pid_tuning/simulations/data/closed_loop_data.csv", "w", newline="") as file:
         writer = csv.writer(file)

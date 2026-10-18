@@ -1,2 +1,2 @@
-gain = 1.0
-time_constant = 1.0
+gain = 2.5
+time_constant = 4.0
