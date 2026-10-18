@@ -1,0 +1,66 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error
+from ml_pid_tuning.ml.first_order.examine_object import gain as test_gain
+from ml_pid_tuning.ml.first_order.examine_object import time_constant as test_time_constant
+
+def main():
+    data = pd.read_csv("src/ml_pid_tuning/data/datasets/first_order_dataset.csv")
+
+    X = data[["gain", "time_constant"]]
+    y = data[["kp", "ti", "td"]]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    x_scaler = StandardScaler()
+    y_scaler = StandardScaler()
+
+    X_train_scaled = x_scaler.fit_transform(X_train)
+    X_test_scaled = x_scaler.transform(X_test)
+
+    y_train_scaled = y_scaler.fit_transform(y_train)
+
+    model = MLPRegressor(hidden_layer_sizes=(64, 64), max_iter=2000, random_state=42)
+
+    model.fit(X_train_scaled, y_train_scaled)
+
+    predictions_scaled = model.predict(X_test_scaled)
+
+    predictions = y_scaler.inverse_transform(predictions_scaled)
+
+    kp_mae = mean_absolute_error(y_test["kp"], predictions[:, 0])
+    ti_mae = mean_absolute_error(y_test["ti"], predictions[:, 1])
+    td_mae = mean_absolute_error(y_test["td"], predictions[:, 2])
+
+    print("Model performance")
+    print("Kp MAE:", round(kp_mae, 4))
+    print("Ti MAE:", round(ti_mae, 4))
+    print("Td MAE:", round(td_mae, 4))
+
+    print()
+    print("Test object")
+
+    test_input = pd.DataFrame([[test_gain, test_time_constant]], columns=["gain", "time_constant"])
+    test_input_scaled = x_scaler.transform(test_input)
+
+    test_prediction_scaled = model.predict(test_input_scaled)
+    test_prediction = y_scaler.inverse_transform(test_prediction_scaled.reshape(1, -1))
+
+    predicted_kp = test_prediction[0][0]
+    predicted_ti = test_prediction[0][1]
+    predicted_td = test_prediction[0][2]
+
+    print("Object parameters")
+    print("Gain:", test_gain)
+    print("Time constant:", test_time_constant)
+
+    print("Predicted PID parameters")
+    print("Kp:", round(predicted_kp, 4))
+    print("Ti:", round(predicted_ti, 4))
+    print("Td:", round(predicted_td, 4))
+
+
+if __name__ == "__main__":
+    main()
