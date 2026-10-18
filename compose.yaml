@@ -103,7 +103,20 @@ services:
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/first_order/random_forest_regressor/train_first_order.py
+    command: >
+      sh -c "
+      echo '===== RANDOM FOREST =====' &&
+      python src/ml_pid_tuning/ml/first_order/random_forest_regressor/train_first_order.py &&
+
+      echo '===== EXTRA TREES =====' &&
+      python src/ml_pid_tuning/ml/first_order/extra_trees_regressor/train_first_order.py &&
+
+      echo '===== GRADIENT BOOSTING =====' &&
+      python src/ml_pid_tuning/ml/first_order/gradient_boosting_regressor/train_first_order.py &&
+
+      echo '===== MLP =====' &&
+      python src/ml_pid_tuning/ml/first_order/mlp_regressor/train_first_order.py
+      "
 
     depends_on:
       generate_first_order_data:
@@ -119,7 +132,20 @@ services:
     volumes:
       - ./src/ml_pid_tuning/data/datasets:/app/src/ml_pid_tuning/data/datasets
 
-    command: python src/ml_pid_tuning/ml/second_order/random_forest_regressor/train_second_order.py
+    command: >
+      sh -c "
+      echo '===== RANDOM FOREST =====' &&
+      python src/ml_pid_tuning/ml/second_order/random_forest_regressor/train_second_order.py &&
+
+      echo '===== EXTRA TREES =====' &&
+      python src/ml_pid_tuning/ml/second_order/extra_trees_regressor/train_second_order.py &&
+
+      echo '===== GRADIENT BOOSTING =====' &&
+      python src/ml_pid_tuning/ml/second_order/gradient_boosting_regressor/train_second_order.py &&
+
+      echo '===== MLP =====' &&
+      python src/ml_pid_tuning/ml/second_order/mlp_regressor/train_second_order.py
+      "
 
     depends_on:
       generate_second_order_data:
