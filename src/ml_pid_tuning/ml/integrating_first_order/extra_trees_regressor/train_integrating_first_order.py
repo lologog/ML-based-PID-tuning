@@ -2,8 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.metrics import mean_absolute_error
-from ml_pid_tuning.ml.integrating_first_order.test_object import gain as test_gain
-from ml_pid_tuning.ml.integrating_first_order.test_object import time_constant as test_time_constant
+from ml_pid_tuning.ml.integrating_first_order.examined_object import gain as test_gain
+from ml_pid_tuning.ml.integrating_first_order.examined_object import time_constant as test_time_constant
 
 def main():
     data = pd.read_csv("src/ml_pid_tuning/data/datasets/integrating_first_order_dataset.csv")
