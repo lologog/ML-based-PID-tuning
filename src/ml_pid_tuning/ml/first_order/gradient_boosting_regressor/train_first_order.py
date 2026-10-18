@@ -3,8 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.metrics import mean_absolute_error
-from ml_pid_tuning.ml.first_order.examine_object import gain as test_gain
-from ml_pid_tuning.ml.first_order.examine_object import time_constant as test_time_constant
+from ml_pid_tuning.ml.first_order.examined_object import gain as test_gain
+from ml_pid_tuning.ml.first_order.examined_object import time_constant as test_time_constant
 
 def main():
     data = pd.read_csv("src/ml_pid_tuning/data/datasets/first_order_dataset.csv")
