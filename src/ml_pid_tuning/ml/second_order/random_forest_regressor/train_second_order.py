@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
+from ml_pid_tuning.ml.second_order.examined_object import gain as test_gain
+from ml_pid_tuning.ml.second_order.examined_object import time_constant_1 as test_time_constant_1
+from ml_pid_tuning.ml.second_order.examined_object import time_constant_2 as test_time_constant_2
 
 def main():
     data = pd.read_csv("src/ml_pid_tuning/data/datasets/second_order_dataset.csv")
@@ -27,27 +30,25 @@ def main():
     print("Td MAE:", round(td_mae, 4))
 
     print()
-    print("Predictions")
+    print("Examined plant")
 
-    for i in range(len(predictions)):
-        gain = X_test.iloc[i]["gain"]
-        time_constant_1 = X_test.iloc[i]["time_constant_1"]
-        time_constant_2 = X_test.iloc[i]["time_constant_2"]
+    test_input = pd.DataFrame([[test_gain, test_time_constant_1, test_time_constant_2]], columns=["gain", "time_constant_1", "time_constant_2"])
 
-        predicted_kp = predictions[i][0]
-        predicted_ti = predictions[i][1]
-        predicted_td = predictions[i][2]
+    test_prediction = model.predict(test_input)
 
-        print()
-        print("Object parameters")
-        print("Gain:", round(gain, 4))
-        print("Time constant 1:", round(time_constant_1, 4))
-        print("Time constant 2:", round(time_constant_2, 4))
+    predicted_kp = test_prediction[0][0]
+    predicted_ti = test_prediction[0][1]
+    predicted_td = test_prediction[0][2]
 
-        print("Predicted PID parameters")
-        print("Kp:", round(predicted_kp, 4))
-        print("Ti:", round(predicted_ti, 4))
-        print("Td:", round(predicted_td, 4))
+    print("Plant parameters")
+    print("Gain:", test_gain)
+    print("Time constant 1:", test_time_constant_1)
+    print("Time constant 2:", test_time_constant_2)
+
+    print("Predicted PID parameters")
+    print("Kp:", round(predicted_kp, 4))
+    print("Ti:", round(predicted_ti, 4))
+    print("Td:", round(predicted_td, 4))
 
 if __name__ == "__main__":
     main()
