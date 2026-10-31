@@ -14,7 +14,7 @@ where $\boldsymbol{\theta}$ denotes the plant parameters.
 
 ## Methodology
 
-1. Sample 100 plant configurations per dataset, with gain in $[0.5, 5.0]$ and time constants in $[1.0, 10.0]$.
+1. Sample 100 plant configurations per dataset, with gain in $[0.5, 5.0]$ and plant time constants, including the zero time constant, in $[1.0, 10.0]$.
 2. Optimize PID parameters using differential evolution and the Integral of Time-weighted Absolute Error:
 
    $$
@@ -28,6 +28,7 @@ where $\boldsymbol{\theta}$ denotes the plant parameters.
 | Plant family | Transfer function | Implemented regressors |
 | --- | --- | --- |
 | First order | $K/(Ts+1)$ | Random Forest, Extra Trees, Gradient Boosting, MLP |
+| First order with zero | $K(T_zs+1)/(Ts+1)$ | Random Forest, Extra Trees, Gradient Boosting, MLP |
 | Second order | $K/[(T_1s+1)(T_2s+1)]$ | Random Forest |
 | Integrating first order | $K/[s(Ts+1)]$ | Random Forest, Extra Trees, Gradient Boosting, MLP |
 
@@ -43,6 +44,7 @@ docker compose up --build
 
 # Generate datasets and train models for a selected plant family
 docker compose --profile first_order up --build
+docker compose --profile first_order_zero up --build
 docker compose --profile integrating_first_order up --build
 
 # Run tests independently
